@@ -15,38 +15,30 @@ class WoWCharacterGenerator:
         self.label_fondo.place(relwidth=1, relheight=1)
 
         # Razas, géneros y clases
-        self.razas = ['Humano', 'Elfo_de_la_noche', 'Enano', 'Gnomo', 'Orco', 'Trol', 'No-muerto', 'Tauren', 'Elfo_de_sangre', 'Elfo_nato_nocturno', 'Draenei', 'Draenei_temple_luz', 'goblin', 'Kultiriano', 'Pandaren', 'Mecagnomo', 'Orco_maghar', 'Tauren_alta_montana', 'Trol_zandalary', 'Drakthyr', 'Vulpira', 'Enano_roca_negra', 'Huargen', 'Elfo_del_vacio']
+        self.razas = ['Humano', 'Elfo_de_la_noche', 'Enano', 'Gnomo', 'Orco', 'Trol', 'No-muerto', 'Tauren', 'Elfo_de_sangre', 'Elfo_nato_nocturno', 'Draenei', 'Draenei_temple_luz', 'Goblin', 'Kultiriano', 'Pandaren', 'Mecagnomo', 'Orco_maghar', 'Tauren_alta_montana', 'Trol_zandalary', 'Drakthyr', 'Vulpira', 'Enano_roca_negra', 'Huargen', 'Elfo_del_vacio']
         self.generos = ['Masculino', 'Femenino']
         self.clases = ['Guerrero', 'Paladin', 'Cazador', 'Picaro', 'Sacerdote', 'Dk', 'Chaman', 'Mago', 'Brujo', 'Monje', 'Druida', 'Evocador', 'Dh']
 
         # Cargar imágenes de razas, géneros y clases
-        self.imagenes_razas = [ImageTk.PhotoImage(Image.open(f'imagenes/imagen_raza_{raza.lower()}.png')) for raza in self.razas]
-        self.imagenes_generos = [ImageTk.PhotoImage(Image.open(f'imagenes/imagen_genero_{genero.lower()}.png')) for genero in self.generos]
-        self.imagenes_clases = [ImageTk.PhotoImage(Image.open(f'imagenes/imagen_clase_{clase.lower()}.png')) for clase in self.clases]
+        self.imagenes_razas = [ImageTk.PhotoImage(Image.open(f'imagenes/imagen_raza_{raza.lower()}.png').resize((134, 131), resample=Image.LANCZOS)) for raza in self.razas]
+        self.imagenes_generos = [ImageTk.PhotoImage(Image.open(f'imagenes/imagen_genero_{genero.lower()}.png').resize((134, 131), resample=Image.LANCZOS)) for genero in self.generos]
+        self.imagenes_clases = [ImageTk.PhotoImage(Image.open(f'imagenes/imagen_clase_{clase.lower()}.png').resize((134, 131), resample=Image.LANCZOS)) for clase in self.clases]
 
         # Crear etiquetas e imágenes
-        self.etiqueta_raza = ttk.Label(root, text="Raza:", font=("Helvetica", 12), background="#fff")
-        self.etiqueta_genero = ttk.Label(root, text="Género:", font=("Helvetica", 12), background="#fff")
-        self.etiqueta_clase = ttk.Label(root, text="Clase:", font=("Helvetica", 12), background="#fff")
-
         self.imagen_raza = ttk.Label(root, image=None)
+        self.imagen_raza.grid(row=0, column=0, pady=(self.root.winfo_reqheight() * 0.1, 0), padx=(0, 0), sticky='n')
+
         self.imagen_genero = ttk.Label(root, image=None)
+        self.imagen_genero.grid(row=1, column=0, pady=0, padx=(0, 0), sticky='n')
+
         self.imagen_clase = ttk.Label(root, image=None)
+        self.imagen_clase.grid(row=2, column=0, pady=(0, 0), padx=(0, 0), sticky='n')
 
         # Botón de generación aleatoria
         self.boton_generar = ttk.Button(root, text="Generar Personaje", command=self.generar_personaje, style='TButton')
 
-        # Diseño de la cuadrícula
-        self.etiqueta_raza.grid(row=0, column=0, padx=5, pady=5, sticky='e')
-        self.etiqueta_genero.grid(row=1, column=0, padx=5, pady=5, sticky='e')
-        self.etiqueta_clase.grid(row=2, column=0, padx=5, pady=5, sticky='e')
-
-        self.imagen_raza.grid(row=0, column=1, padx=5, pady=5, sticky='w')
-        self.imagen_genero.grid(row=1, column=1, padx=5, pady=5, sticky='w')
-        self.imagen_clase.grid(row=2, column=1, padx=5, pady=5, sticky='w')
-
-        # Obtener el 20% del borde inferior
-        base_20_percent = int(self.root.winfo_reqheight() * 0.8)
+        # Obtener el 20% del borde superior
+        base_20_percent = int(self.root.winfo_reqheight() * 0.5)
 
         # Configurar el botón en la base centrado
         self.boton_generar.place(relx=0.5, rely=1, anchor='s', y=-base_20_percent)
@@ -54,20 +46,44 @@ class WoWCharacterGenerator:
         # Establecer tamaño inicial
         self.root.geometry("405x720")
         # Vincular la función de ajuste al cambio de tamaño
-        self.root.bind("<Configure>", self.ajustar_tamano)
+        self.root.bind("<Configure>", self.on_configure)
+        self.resize_flag = False
 
-    def ajustar_tamano(self, event):
-        # Ajustar la imagen de fondo al tamaño de la ventana
-        ancho, altura = event.width, event.height
-        nueva_fondo = self.fondo.resize((ancho, altura), Image.ANTIALIAS)
-        nueva_fondo = ImageTk.PhotoImage(nueva_fondo)
-        self.label_fondo.configure(image=nueva_fondo)
-        self.label_fondo.image = nueva_fondo
+    def on_configure(self, event):
+        # Check the flag to determine whether to adjust the size
+        if self.resize_flag:
+            # Ajustar la imagen de fondo al tamaño de la ventana
+            ancho, altura = 405, 720
+            nueva_fondo = Image.open("fondo.jpg").resize((ancho, altura), resample=Image.LANCZOS)
+            nueva_fondo = ImageTk.PhotoImage(nueva_fondo)
+            self.label_fondo.configure(image=nueva_fondo)
+            self.label_fondo.image = nueva_fondo
 
-        # Centrar la ventana y mantener las proporciones
-        proporciones = 405 / 720
-        nuevo_ancho = int(altura * proporciones)
-        self.root.geometry(f"{nuevo_ancho}x{altura}+{int((event.width - nuevo_ancho) / 2)}+0")
+            # Configurar la geometría de la ventana y deshabilitar la capacidad de cambiar tamaño
+            self.root.geometry(f"{ancho}x{altura}")
+            self.root.resizable(width=False, height=False)
+
+            # Configurar el tamaño de la cuadrícula para las imágenes
+            ancho_imagen = 134
+            altura_imagen = 134
+            margen_entre_imagenes = (altura - 3 * altura_imagen) // 2  # Margen entre las secciones
+
+            # Configurar la cuadrícula para centrar verticalmente las imágenes
+            self.root.grid_rowconfigure(0, minsize=altura_imagen, weight=1)
+            self.root.grid_rowconfigure(1, minsize=margen_entre_imagenes, weight=0)
+            self.root.grid_rowconfigure(2, minsize=altura_imagen, weight=1)
+
+            # Centrar las imágenes horizontalmente en la cuadrícula
+            self.imagen_raza.grid_configure(pady=(0, 15))
+            self.imagen_genero.grid_configure(pady=(0, 0))
+            self.imagen_clase.grid_configure(pady=(15, 0))
+
+            # Ajustar solo el botón al 20% de la base
+            base_20_percent = int(self.root.winfo_reqheight() * 0.2)
+            self.boton_generar.place(relx=0.5, rely=1, anchor='s', y=-base_20_percent)
+
+            # Set the flag to False to prevent further adjustments
+            self.resize_flag = False
 
     def generar_personaje(self):
         # Seleccionar al azar una raza, género y clase
@@ -152,6 +168,16 @@ class WoWCharacterGenerator:
         self.imagen_raza.configure(image=self.imagenes_razas[self.razas.index(raza_aleatoria)])
         self.imagen_genero.configure(image=self.imagenes_generos[self.generos.index(genero_aleatorio)])
         self.imagen_clase.configure(image=self.imagenes_clases[self.clases.index(clase_aleatoria)])
+
+        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_rowconfigure(0, weight=0)
+        self.root.grid_rowconfigure(1, weight=0)
+        self.root.grid_rowconfigure(2, weight=2)
+
+        # Ajustar el espacio vertical
+        self.imagen_raza.grid_configure(column=0, sticky='n')
+        self.imagen_genero.grid_configure(column=0, sticky='n')
+        self.imagen_clase.grid_configure(column=0, sticky='n')
 
 if __name__ == "__main__":
     root = tk.Tk()
