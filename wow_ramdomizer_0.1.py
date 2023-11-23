@@ -44,10 +44,10 @@ class WoWCharacterGenerator:
         self.imagen_clase.grid(row=2, column=0, pady=0, padx=(0, 0), sticky='n')
 
         # Cargar imagen para el label
-        self.imagen_label = ImageTk.PhotoImage(file='frag_fondo.png')
+        self.imagen_label = ImageTk.PhotoImage(file='boton.png')
         
        # Cargar imágenes para la etiqueta (original y al hacer clic)
-        self.imagen_label_original = ImageTk.PhotoImage(file='frag_fondo.png')
+        self.imagen_label_original = ImageTk.PhotoImage(file='boton.png')
         self.imagen_label_clic = ImageTk.PhotoImage(file='boton_press.png')
 
         # Label de generación aleatoria como una imagen
