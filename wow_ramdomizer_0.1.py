@@ -50,9 +50,9 @@ class WoWCharacterGenerator:
         self.imagen_label_original = ImageTk.PhotoImage(file='boton.png')
         self.imagen_label_clic = ImageTk.PhotoImage(file='boton_press.png')
 
-        # Label de generación aleatoria como una imagen
+        # Botón para generar personajes
         self.label_generar = tk.Label(root, image=self.imagen_label_original, cursor="hand2", highlightthickness=0, bd=0)
-        self.label_generar.grid(row=3, column=0, pady=10)  # Use grid instead of pack
+        self.label_generar.grid(row=3, column=0, pady=10)
 
         # Calculate the 20% of the height of the root window
         base_20_percent = int(root.winfo_reqheight() * 0.4)
@@ -70,12 +70,35 @@ class WoWCharacterGenerator:
         # Centrar el marco en la ventana
         self.marco_imagenes.place(relx=0.5, rely=0.5, anchor='center')
         
+        self.timer_running = False
+        self.resultado_final = None
+        
     def on_label_press(self):
-        # Change the label image when the click is pressed
         self.label_generar.config(image=self.imagen_label_clic)
 
     def on_label_release(self):
-        # Revert to the original label image when the click is released
+        if not self.timer_running:
+            # Si el temporizador no está en ejecución, comienza el efecto de ruleta
+            self.timer_running = True
+            self.iniciar_ruleta()
+
+    def iniciar_ruleta(self):
+        # Muestra imágenes al azar durante 3 segundos antes de seleccionar el resultado final
+        for _ in range(30):  # Cambiar el número de iteraciones para ajustar la duración
+            raza_aleatoria = random.choice(self.razas)
+            genero_aleatorio = random.choice(self.generos)
+            clase_aleatoria = random.choice(self.clases)
+
+            self.imagen_raza.configure(image=self.imagenes_razas[self.razas.index(raza_aleatoria)])
+            self.imagen_genero.configure(image=self.imagenes_generos[self.generos.index(genero_aleatorio)])
+            self.imagen_clase.configure(image=self.imagenes_clases[self.clases.index(clase_aleatoria)])
+
+            self.root.update()  # Actualizar la ventana para mostrar la nueva imagen
+            self.root.after(100)  # Ajustar la velocidad de cambio de imagen (en milisegundos)
+
+        # Después de 3 segundos, seleccionar el resultado final
+        self.generar_personaje()
+        self.timer_running = False
         self.label_generar.config(image=self.imagen_label_original)
 
     def generar_personaje(self):
