@@ -2,6 +2,7 @@ import tkinter as tk # Python 2
 import tkinter as tk # Python 3
 from PIL import ImageTk, Image
 import random
+import pygame
 
 class WoWCharacterGenerator:
     def __init__(self, root):
@@ -50,10 +51,14 @@ class WoWCharacterGenerator:
         self.imagen_label_original = ImageTk.PhotoImage(file='boton.png')
         self.imagen_label_clic = ImageTk.PhotoImage(file='boton_press.png')
 
+        # Configurar sonido de clic
+        pygame.mixer.init()
+        self.sonido_clic = pygame.mixer.Sound("sounds/arcade_machine.wav")
+
         # Botón para generar personajes
         self.label_generar = tk.Label(root, image=self.imagen_label_original, cursor="hand2", highlightthickness=0, bd=0)
         self.label_generar.grid(row=3, column=0, pady=10)
-
+        
         # Calculate the 20% of the height of the root window
         base_20_percent = int(root.winfo_reqheight() * 0.4)
 
@@ -75,6 +80,7 @@ class WoWCharacterGenerator:
         
     def on_label_press(self):
         self.label_generar.config(image=self.imagen_label_clic)
+        self.sonido_clic.play()
 
     def on_label_release(self):
         if not self.timer_running:
@@ -84,7 +90,7 @@ class WoWCharacterGenerator:
 
     def iniciar_ruleta(self):
         # Muestra imágenes al azar durante 3 segundos antes de seleccionar el resultado final
-        for _ in range(30):  # Cambiar el número de iteraciones para ajustar la duración
+        for _ in range(23):  # Cambiar el número de iteraciones para ajustar la duración
             raza_aleatoria = random.choice(self.razas)
             genero_aleatorio = random.choice(self.generos)
             clase_aleatoria = random.choice(self.clases)
