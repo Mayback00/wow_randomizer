@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import ttk
 from PIL import ImageTk, Image
 import random
 
@@ -15,7 +14,7 @@ class WoWCharacterGenerator:
         self.label_fondo.place(relwidth=1, relheight=1)
 
         # Crear un marco para el grid de imágenes
-        self.marco_imagenes = ttk.Frame(root)
+        self.marco_imagenes = tk.Frame(root)
         self.marco_imagenes.grid(row=0, column=0, pady=(root.winfo_reqheight() * 0.1, 0), padx=(0, 0), sticky='n')
 
         # Razas, géneros y clases (incluyendo las opciones adicionales)
@@ -34,31 +33,33 @@ class WoWCharacterGenerator:
         self.imagenes_clases = [ImageTk.PhotoImage(Image.open(f'imagenes/imagen_clase_{clase.lower()}.png').resize((134, 131), resample=Image.LANCZOS)) for clase in self.clases]
 
         # Crear etiquetas e imágenes dentro del marco
-        self.imagen_raza = ttk.Label(self.marco_imagenes, image=self.imagenes_razas[-1])  # Última imagen es 'Facciones'
+        self.imagen_raza = tk.Label(self.marco_imagenes, image=self.imagenes_razas[-1])  # Última imagen es 'Facciones'
         self.imagen_raza.grid(row=0, column=0, pady=0, padx=(0, 0), sticky='n')
 
-        self.imagen_genero = ttk.Label(self.marco_imagenes, image=self.imagenes_generos[-1])  # Última imagen es 'Mf'
+        self.imagen_genero = tk.Label(self.marco_imagenes, image=self.imagenes_generos[-1])  # Última imagen es 'Mf'
         self.imagen_genero.grid(row=1, column=0, pady=0, padx=(0, 0), sticky='n')
 
-        self.imagen_clase = ttk.Label(self.marco_imagenes, image=self.imagenes_clases[-1])  # Última imagen es 'Tdah'
+        self.imagen_clase = tk.Label(self.marco_imagenes, image=self.imagenes_clases[-1])  # Última imagen es 'Tdah'
         self.imagen_clase.grid(row=2, column=0, pady=0, padx=(0, 0), sticky='n')
 
-        # Botón de generación aleatoria
-        self.boton_generar = ttk.Button(root, text="Generar Personaje", command=self.generar_personaje, style='TButton')
+         # Cargar imagen para el botón
+        self.imagen_boton = ImageTk.PhotoImage(file='boton.png')
+
+        # Botón de generación aleatoria como una imagen
+        self.boton_generar = tk.Button(root, image=self.imagen_boton, command=self.generar_personaje, takefocus=False,
+        borderwidth=0)
 
         # Obtener el 20% del borde superior
-        base_20_percent = int(root.winfo_reqheight() * 0.5)
+        base_20_percent = int(root.winfo_reqheight() * 0.3)
 
         # Configurar el botón en la base centrado
         self.boton_generar.place(relx=0.5, rely=1, anchor='s', y=-base_20_percent)
 
         # Establecer tamaño inicial
         root.geometry("405x720")
-        # Vincular la función de ajuste al cambio de tamaño
 
         # Centrar el marco en la ventana
         self.marco_imagenes.place(relx=0.5, rely=0.5, anchor='center')
-        # Vincular la función de ajuste al cambio de tamaño
 
     def generar_personaje(self):
         # Seleccionar al azar una raza, género y clase
