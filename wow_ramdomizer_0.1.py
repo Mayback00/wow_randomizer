@@ -7,7 +7,7 @@ class WoWCharacterGenerator:
     def __init__(self, root):
         self.root = root
         self.root.title("WoW Dragonflight Character Generator")
-        self.root.iconbitmap("icono.ico")
+        self.root.iconbitmap("imagenes/icono.ico")
 
         # Configurar la imagen de fondo
         self.fondo = ImageTk.PhotoImage(Image.open("imagenes/fondo.jpg"))
@@ -89,7 +89,7 @@ class WoWCharacterGenerator:
 
     def iniciar_ruleta(self):
         # Muestra imágenes al azar durante 3 segundos antes de seleccionar el resultado final
-        for _ in range(23):  # Cambiar el número de iteraciones para ajustar la duración
+        for _ in range(22):  # Cambiar el número de iteraciones para ajustar la duración
             raza_aleatoria = random.choice(self.razas)
             genero_aleatorio = random.choice(self.generos)
             clase_aleatoria = random.choice(self.clases)
