@@ -1,4 +1,5 @@
-import tkinter as tk
+import tkinter as tk # Python 2
+import tkinter as tk # Python 3
 from PIL import ImageTk, Image
 import random
 
@@ -42,24 +43,40 @@ class WoWCharacterGenerator:
         self.imagen_clase = tk.Label(self.marco_imagenes, image=self.imagenes_clases[-1])  # Última imagen es 'Tdah'
         self.imagen_clase.grid(row=2, column=0, pady=0, padx=(0, 0), sticky='n')
 
-         # Cargar imagen para el botón
-        self.imagen_boton = ImageTk.PhotoImage(file='boton.png')
+        # Cargar imagen para el label
+        self.imagen_label = ImageTk.PhotoImage(file='frag_fondo.png')
+        
+       # Cargar imágenes para la etiqueta (original y al hacer clic)
+        self.imagen_label_original = ImageTk.PhotoImage(file='frag_fondo.png')
+        self.imagen_label_clic = ImageTk.PhotoImage(file='boton_press.png')
 
-        # Botón de generación aleatoria como una imagen
-        self.boton_generar = tk.Button(root, image=self.imagen_boton, command=self.generar_personaje, takefocus=False,
-        borderwidth=0)
+        # Label de generación aleatoria como una imagen
+        self.label_generar = tk.Label(root, image=self.imagen_label_original, cursor="hand2", highlightthickness=0, bd=0)
+        self.label_generar.grid(row=3, column=0, pady=10)  # Use grid instead of pack
 
-        # Obtener el 20% del borde superior
-        base_20_percent = int(root.winfo_reqheight() * 0.3)
+        # Calculate the 20% of the height of the root window
+        base_20_percent = int(root.winfo_reqheight() * 0.4)
 
-        # Configurar el botón en la base centrado
-        self.boton_generar.place(relx=0.5, rely=1, anchor='s', y=-base_20_percent)
+        # Place the label centered horizontally and at 20% of the height from the bottom
+        self.label_generar.place(relx=0.5, rely=1, anchor='s', y=-base_20_percent)
+
+        # Bind the label to functions for press and release events
+        self.label_generar.bind("<Button-1>", lambda event: (self.on_label_press(), self.generar_personaje()))
+        self.label_generar.bind("<ButtonRelease-1>", lambda event: self.on_label_release())
 
         # Establecer tamaño inicial
         root.geometry("405x720")
 
         # Centrar el marco en la ventana
         self.marco_imagenes.place(relx=0.5, rely=0.5, anchor='center')
+        
+    def on_label_press(self):
+        # Change the label image when the click is pressed
+        self.label_generar.config(image=self.imagen_label_clic)
+
+    def on_label_release(self):
+        # Revert to the original label image when the click is released
+        self.label_generar.config(image=self.imagen_label_original)
 
     def generar_personaje(self):
         # Seleccionar al azar una raza, género y clase
